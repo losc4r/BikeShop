@@ -46,5 +46,146 @@ prosperando no mercado de bicicletas
 ### Modelo Conceitual
 
 <div align="center">
-<img src="img/">
+<img src="img/bikeshop.png">
 </div>
+
+### Esquema de Tabela para DB
+
+<div align="center">
+<img src="img/excel.png">
+</div>
+
+
+### Modelo Relacional do DB
+
+<div align="center">
+<img src="img/dbeaver.png">
+</div>
+
+### Modelo Físico: código que gera o banco de dados
+
+CREATE TABLE cliente(
+	id_cliente int PRIMARY KEY AUTO_INCREMENT,
+	nome_cliente varchar(30) not null,
+	cpf_cliente varchar(15) not null UNIQUE,
+	data_cadastro DATE not null,
+	endereco_cliente varchar(60) not null,
+	contato int not null
+);
+
+CREATE TABLE produto(
+	id_produto int PRIMARY KEY AUTO_INCREMENT,
+	nome_produto varchar(30) not null,
+	preco DECIMAL(8,2) not null,
+	data_fabricacao DATE not null,
+	fornecedor int not null,
+	estoque int not null
+);
+
+CREATE TABLE venda(
+	id_venda int PRIMARY KEY AUTO_INCREMENT,
+	cliente int not null,
+	funcionario int not null,
+	data_hora DATETIME not null,
+	quantidade_vendida int not null,
+	metodo_pagamento varchar(30) not null,
+	total DECIMAL(7,2) not null,
+	produto int not null
+);
+
+CREATE TABLE estoque(
+	id_estoque int PRIMARY KEY AUTO_INCREMENT,
+	produto int not null,
+	quantidade_estoque int not null,
+	data_aquisicao DATE not null,
+	modelo varchar(100) not null,
+	marca varchar(40) not null
+);
+
+CREATE TABLE fornecedor(
+	id_fornecedor int PRIMARY KEY AUTO_INCREMENT,
+	nome_fornecedor varchar(30) not null UNIQUE,
+	cnpj varchar(15) not null UNIQUE,
+	endereco_fornecedor varchar(40) not null,
+	contato int not null,
+	produto int not null
+);
+
+CREATE TABLE funcionario(
+	id_funcionario int PRIMARY KEY AUTO_INCREMENT,
+	nome_funcionario varchar(30) not null,
+	cpf_funcionario varchar(15) not null UNIQUE,
+	data_nascimento DATE not null,
+	horario_expediente DATETIME not null,
+	endereco_funcionario varchar(50) not null,
+	contato int not null,
+	cargo varchar(50) not null,
+	salario DECIMAL(7,2) not null,
+	data_admissao DATE not null
+);
+
+CREATE TABLE contato(
+	id_contato int PRIMARY KEY AUTO_INCREMENT,
+	telefone_residencial VARCHAR(15) null,
+	telefone_comercial VARCHAR(15) null,
+	telefone_celular VARCHAR(15) null,
+	email VARCHAR(100) null
+);
+
+------------------------------------------------------------------
+
+alter table cliente
+add constraint `fk_cliente_pk_contato`
+foreing key cliente(`contato`)
+references contato(`id_contato`);
+
+alter table produto
+add constraint `fk_produto_pk_fornecedor`
+foreing key produto(`fornecedor`)
+references fornecedor(`id_fornecedor`);
+
+alter table produto
+add constraint `fk_produto_pk_estoque`
+foreing key produto(`estoque`)
+references estoque(`id_estoque`);
+
+alter table venda
+add constraint `fk_venda_pk_cliente`
+foreing key venda(`cliente`)
+references cliente(`id_cliente`);
+
+alter table venda
+add constraint `fk_venda_pk_funcionario`
+foreing key venda(`funcionario`)
+references funcionario(`id_funcionario`);
+
+alter table venda
+add constraint `fk_venda_pk_produto`
+foreing key venda(`produto`)
+references produto(`id_produto`);
+
+alter table estoque
+add constraint `fk_estoque_pk_produto`
+foreing key estoque(`produto`)
+references produto(`id_produto`);
+
+alter table fornecedor
+add constraint `fk_fornecedor_pk_produto`
+foreing key fornecedor(`produto`)
+references produto(`id_produto`);
+
+alter table fornecedor
+add constraint `fk_fornecedor_pk_contato`
+foreing key fornecedor(`contato`)
+references contato(`id_contato`);
+
+alter table funcionario
+add constraint `fk_funcionario_pk_contato`
+foreing key funcionario(`contato`)
+references contato(`id_contato`);
+
+
+
+
+
+
